@@ -1,18 +1,3 @@
-# Crear proyecto
-sf project generate --name salesforce-cicd-lab
-cd salesforce-cicd-lab
-
-# Obtener manifiesto completo
-sf project generate manifest --output-dir ./manifest --from-org {ORG-ALIAS}
-
-# Obtener toda la metadata
-sf project retrieve start --manifest manifest/package.xml --target-org {ORG-ALIAS}
-
-
-
-
-
-
 # Salesforce DX Project
 
 Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
