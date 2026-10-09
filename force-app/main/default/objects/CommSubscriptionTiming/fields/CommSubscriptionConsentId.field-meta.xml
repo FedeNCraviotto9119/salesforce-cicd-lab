@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CommSubscriptionConsentId</fullName>
+    <inlineHelpText>El registro del Consentimiento de suscripción de comunicación asociado con la Temporización de suscripción de comunicación.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+    <type>MasterDetail</type>
+</CustomField>
