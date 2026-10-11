@@ -6,7 +6,7 @@ on:
       - integ
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   validate:
