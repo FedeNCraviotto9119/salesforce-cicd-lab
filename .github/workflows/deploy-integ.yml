@@ -35,7 +35,7 @@ jobs:
         run: |
           printf '%s' "$SF_AUTH_URL" |
             sf org login sfdx-url \
-              --sfdx-url-stdin \
+              --sfdx-url-stdin - \
               --alias gINTEG
 
       - name: Deploy CicdHello to INTEG
