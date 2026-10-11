@@ -41,7 +41,9 @@ jobs:
         run: |
           sf project deploy start \
             --metadata ApexClass:CicdHello \
+            --metadata ApexClass:CicdHelloTest \
             --target-org gINTEG \
             --dry-run \
-            --test-level RunLocalTests \
+            --test-level RunSpecifiedTests \
+            --tests CicdHelloTest \
             --wait 30
