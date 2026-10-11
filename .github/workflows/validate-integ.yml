@@ -28,9 +28,9 @@ jobs:
 
       - name: Authenticate Salesforce INTEG
         env:
-          SF_AUTH_URL: $({ secrets.SF_INTEG_AUTH_URL })
+          SF_AUTH_URL: ${{ secrets.SF_INTEG_AUTH_URL }}
         run: |
-          printf '%s' "SF_AUTH_URL" |
+          printf '%s' "$SF_AUTH_URL" |
             sf org login sfdx-url \
               --sfdx-url-stdin - \
               --alias gINTEG
@@ -39,7 +39,7 @@ jobs:
         run: |
           sf project deploy start \
             --metadata ApexClass:CicdHello \
-            --target-org gINTEG \ 
-            -- dry-run \
+            --target-org gINTEG \
+            --dry-run \
             --test-level RunLocalTests \ 
             --wait 30
