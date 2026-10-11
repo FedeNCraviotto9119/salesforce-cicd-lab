@@ -16,13 +16,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
-      
+          node-version: '24'
+          check-latest: true
+          package-manager-cache: false
+
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
 
@@ -41,5 +43,5 @@ jobs:
             --metadata ApexClass:CicdHello \
             --target-org gINTEG \
             --dry-run \
-            --test-level RunLocalTests \ 
+            --test-level RunLocalTests \
             --wait 30
