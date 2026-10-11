@@ -1,5 +1,7 @@
-public with sharing class CicdHello {
-    public CicdHello() {
+public class CicdHello {
 
+    public static String getMessage() {
+        return 'Hello from DEV1!';
     }
+
 }
