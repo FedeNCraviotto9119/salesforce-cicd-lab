@@ -44,8 +44,8 @@ jobs:
           echo "Feature commit: $(git rev-parse HEAD)"
 
           sf sgd source delta \
-            -- from "$BASE_COMMIT" \
-            -- to HEAD \
+            --from "$BASE_COMMIT" \
+            --to HEAD \
             --source-dir force-app \
             --output-dir delta
 
