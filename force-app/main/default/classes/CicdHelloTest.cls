@@ -9,7 +9,7 @@ private class CicdHelloTest {
         Test.stopTest();
 
         System.assertEquals(
-            'Hello from my first feature branch!',
+            'This is an incorrect message!',
             result,
             'The method should return the expected message'
         );
