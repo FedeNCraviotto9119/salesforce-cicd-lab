@@ -14,4 +14,14 @@ private class CicdHelloTest {
             'The method should return the expected message'
         );
     }
+
+    @IsTest
+    static void shouldReturnCorrectSum() {
+
+        Test.startTest();
+        Integer result = CicdHello.getSum(10, 20);
+        Test.stopTest();
+
+        System.assertEquals(30, result, 'Incorrect sum');
+    }
 }
