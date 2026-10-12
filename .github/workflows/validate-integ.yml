@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with: ${{ github.event.pull_request.head.sha}}
+        fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -28,6 +30,27 @@ jobs:
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
 
+      - name: Install SFDX Git Delta
+        run: echo y | sf plugins install sfdx-git-delta
+
+      - name: Generate Delta Package
+        run: |
+          mkdir -p delta
+
+          BASE_COMMIT=$(git merge-base HEAD origin/integ)
+
+          echo "Base commit: $BASE_COMMIT"
+          echo "Feature commit: $(git rev-parse HEAD)"
+
+          sf sgd source delta \
+            -- from "$BASE_COMMIT" \
+            -- to HEAD \
+            --source-dir force-app \
+            --output-dir delta
+
+      - name: Show generated package
+        run: cat delta/package/package.xml
+
       - name: Authenticate Salesforce INTEG
         env:
           SF_AUTH_URL: ${{ secrets.SF_INTEG_AUTH_URL }}
@@ -37,11 +60,10 @@ jobs:
               --sfdx-url-stdin - \
               --alias gINTEG
       
-      - name: Validate Apex deployment
+      - name: Validate Delta deployment
         run: |
           sf project deploy start \
-            --metadata ApexClass:CicdHello \
-            --metadata ApexClass:CicdHelloTest \
+            --manifest delta/package/package.xml \
             --target-org gINTEG \
             --dry-run \
             --test-level RunSpecifiedTests \
