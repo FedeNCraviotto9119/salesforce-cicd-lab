@@ -5,7 +5,8 @@ public class CicdHello {
     }
 
     public static Integer getSum(Integer a, Integer b) {
-        return a + b;
+        Integer result = a + b;
+        return result;
     }
 
 }
