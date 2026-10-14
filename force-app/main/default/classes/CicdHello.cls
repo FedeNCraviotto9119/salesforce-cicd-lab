@@ -9,8 +9,8 @@ public class CicdHello {
 
         System.debug('Calculation performed by Developer A');
         System.debug('Calculation performed by Developer B');
-        
-        return result;
+
+        return sumResult;
     }
 
 }
