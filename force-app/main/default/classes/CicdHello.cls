@@ -6,8 +6,11 @@ public class CicdHello {
 
     public static Integer getSum(Integer a, Integer b) {
         Integer sumResult = a + b;
+
+        System.debug('Calculation performed by Developer A');
         System.debug('Calculation performed by Developer B');
-        return sumResult;
+        
+        return result;
     }
 
 }
