@@ -5,9 +5,12 @@ public class CicdHello {
     }
 
     public static Integer getSum(Integer a, Integer b) {
-        Integer result = a + b;
+        Integer sumResult = a + b;
+
         System.debug('Calculation performed by Developer A');
-        return result;
+        System.debug('Calculation performed by Developer B');
+
+        return sumResult;
     }
 
 }
