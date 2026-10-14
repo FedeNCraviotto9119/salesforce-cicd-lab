@@ -9,6 +9,7 @@ public class CicdHello {
 
         System.debug('Calculation performed by Developer A');
         System.debug('Calculation performed by Developer B');
+        System.debug('Test jona');
 
         return sumResult;
     }
