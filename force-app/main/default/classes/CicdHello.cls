@@ -6,6 +6,7 @@ public class CicdHello {
 
     public static Integer getSum(Integer a, Integer b) {
         Integer result = a + b;
+        System.debug('Calculation performed by Developer A');
         return result;
     }
 
