@@ -52,6 +52,6 @@ private class CicdHelloTest {
         String result = CicdHello.getRebaseMessage();
         Test.stopTest();
 
-        System.assertEquals('Original message from Developer B', result, 'Incorrect RebaseMessage');
+        System.assertEquals('pdated message from Developer B', result, 'Incorrect RebaseMessage');
     }
 }
