@@ -18,4 +18,8 @@ public class CicdHello {
         return 'Developer A - Squash Practice';
     }
 
+    public static String getRebaseMessage() {
+        return 'Message implemented by Developer A';
+    }
+
 }
