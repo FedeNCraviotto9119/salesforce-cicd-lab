@@ -24,4 +24,15 @@ private class CicdHelloTest {
 
         System.assertEquals(30, result, 'Incorrect sum');
     }
+
+    @IsTest
+    static void shouldReturnCorrectDeveloperName() {
+
+        Test.startTest();
+        String result = CicdHello.getDeveloperName();
+        Test.stopTest();
+
+        System.assertEquals('Developer A - Squash Practice', result, 'Incorrect DevolperName');
+    }
+
 }
