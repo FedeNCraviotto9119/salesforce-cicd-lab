@@ -45,4 +45,13 @@ private class CicdHelloTest {
         System.assertEquals('Message implemented by Developer A', result, 'Incorrect RebaseMessage');
     }
 
+    @IsTest
+    static void shouldReturnCorrectRebaseMessage() {
+
+        Test.startTest();
+        String result = CicdHello.getRebaseMessage();
+        Test.stopTest();
+
+        System.assertEquals('Original message from Developer B', result, 'Incorrect RebaseMessage');
+    }
 }
