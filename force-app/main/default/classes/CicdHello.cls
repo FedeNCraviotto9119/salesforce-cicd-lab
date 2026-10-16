@@ -19,7 +19,7 @@ public class CicdHello {
     }
 
     public static String getRebaseMessage() {
-        return 'Original message from Developer B';
+        return 'Updated message from Developer B';
     }
 
 }
