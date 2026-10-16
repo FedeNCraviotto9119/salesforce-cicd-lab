@@ -34,16 +34,6 @@ private class CicdHelloTest {
 
         System.assertEquals('Developer A - Squash Practice', result, 'Incorrect DevolperName');
     }
-    
-    @IsTest
-    static void shouldReturnCorrectRebaseMessage() {
-
-        Test.startTest();
-        String result = CicdHello.getRebaseMessage();
-        Test.stopTest();
-
-        System.assertEquals('Message implemented by Developer A', result, 'Incorrect RebaseMessage');
-    }
 
     @IsTest
     static void shouldReturnCorrectRebaseMessage() {
@@ -52,6 +42,6 @@ private class CicdHelloTest {
         String result = CicdHello.getRebaseMessage();
         Test.stopTest();
 
-        System.assertEquals('pdated message from Developer B', result, 'Incorrect RebaseMessage');
+        System.assertEquals('Updated message from Developer B', result, 'Incorrect RebaseMessage');
     }
 }
