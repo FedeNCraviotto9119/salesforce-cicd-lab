@@ -15,7 +15,7 @@ public class CicdHello {
     }
 
     public static String getDeveloperName() {
-        return 'Developer A';
+        return 'Developer A - Squash Practice';
     }
 
 }
