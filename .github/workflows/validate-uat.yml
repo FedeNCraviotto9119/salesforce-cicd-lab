@@ -1,0 +1,72 @@
+name: Validar Salesforce UAT
+
+on:
+  pull_request:
+    branches:
+      - uat
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate PR against gUAT
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          check-latest: true
+          package-manager-cache: false
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Install SFDX Git Delta
+        run: echo y | sf plugins install sfdx-git-delta
+
+      - name: Generate UAT Delta Package
+        run: |
+          mkdir -p delta
+
+          BASE_COMMIT=$(git merge-base HEAD origin/uat)
+
+          echo "Base commit: $BASE_COMMIT"
+          echo "Feature commit: $(git rev-parse HEAD)"
+
+          sf sgd source delta \
+            --from "$BASE_COMMIT" \
+            --to HEAD \
+            --source-dir force-app \
+            --output-dir delta
+
+      - name: Show generated package
+        run: cat delta/package/package.xml
+
+      - name: Authenticate Salesforce UAT
+        env:
+          SF_AUTH_URL: ${{ secrets.SF_UAT_AUTH_URL }}
+        run: |
+          printf '%s' "$SF_AUTH_URL" |
+            sf org login sfdx-url \
+              --sfdx-url-stdin - \
+              --alias gUAT
+
+      - name: Validate Delta Deployment
+        run: |
+          sf project deploy start \
+            --manifest delta/package/package.xml \
+            --target-org gUAT \
+            --dry-run \
+            --test-level RunSpecifiedTests \
+            --tests CicdHelloTest \
+            --wait 30
