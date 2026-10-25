@@ -1,0 +1,94 @@
+
+name: Deploy Salesforce UAT
+
+on:
+  push:
+    branches:
+      - uat
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salesforce-uat-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to gUAT
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          check-latest: true
+          package-manager-cache: false
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Install SFDX Git Delta
+        run: echo y | sf plugins install sfdx-git-delta
+
+      - name: Generate UAT Deployment Delta
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p delta
+
+          echo "Previous UAT commit: $BEFORE_SHA"
+          echo "Current UAT commit: $AFTER_SHA"
+
+          sf sgd source delta \
+            --from "$BEFORE_SHA" \
+            --to "$AFTER_SHA" \
+            --source-dir force-app \
+            --output-dir delta
+
+      - name: Show Deployment Delta
+        run: |
+          cat delta/package/package.xml
+          cat delta/destructiveChanges/destructiveChanges.xml
+
+      - name: Check Delta
+        id: delta_check
+        run: |
+          if grep -q '<members>' delta/destructiveChanges/destructiveChanges.xml; then
+            echo "Metadata deletions detected. Manual review required."
+            exit 1
+          fi
+
+          if grep -q '<members>' delta/package/package.xml; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No Salesforce metadata changes detected."
+          fi
+
+      - name: Authenticate Salesforce UAT
+        if: steps.delta_check.outputs.has_changes == 'true'
+        env:
+          SF_AUTH_URL: ${{ secrets.SF_UAT_AUTH_URL }}
+        run: |
+          printf '%s' "$SF_AUTH_URL" |
+            sf org login sfdx-url \
+              --sfdx-url-stdin - \
+              --alias gUAT
+
+      - name: Deploy Delta to UAT
+        if: steps.delta_check.outputs.has_changes == 'true'
+        run: |
+          sf project deploy start \
+            --manifest delta/package/package.xml \
+            --target-org gUAT \
+            --test-level RunSpecifiedTests \
+            --tests CicdHelloTest \
+            --wait 30
