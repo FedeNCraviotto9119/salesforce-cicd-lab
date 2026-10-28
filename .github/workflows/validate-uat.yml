@@ -52,7 +52,24 @@ jobs:
       - name: Show generated package
         run: cat delta/package/package.xml
 
+      - name: Check Delta
+        id: delta_check
+        run: |
+          if grep -q '<members>' delta/destructiveChanges/destructiveChanges.xml; then
+            echo "Metadata deletions detected. Manual review required."
+            exit 1
+          fi
+
+          if grep -q '<members>' delta/package/package.xml; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Salesforce metadata changes detected."
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No Salesforce metadata changes detected. Skipping validation."
+          fi
+          
       - name: Authenticate Salesforce UAT
+        if: steps.delta_check.outputs.has_changes == 'true'
         env:
           SF_AUTH_URL: ${{ secrets.SF_UAT_AUTH_URL }}
         run: |
@@ -62,6 +79,7 @@ jobs:
               --alias gUAT
 
       - name: Validate Delta Deployment
+        if: steps.delta_check.outputs.has_changes == 'true'
         run: |
           sf project deploy start \
             --manifest delta/package/package.xml \
