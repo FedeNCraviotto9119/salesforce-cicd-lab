@@ -69,6 +69,7 @@ jobs:
           fi
           
       - name: Authenticate Salesforce UAT
+        if: steps.delta_check.outputs.has_changes == 'true'
         env:
           SF_AUTH_URL: ${{ secrets.SF_UAT_AUTH_URL }}
         run: |
@@ -78,6 +79,7 @@ jobs:
               --alias gUAT
 
       - name: Validate Delta Deployment
+        if: steps.delta_check.outputs.has_changes == 'true'
         run: |
           sf project deploy start \
             --manifest delta/package/package.xml \
